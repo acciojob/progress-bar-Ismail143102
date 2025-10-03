@@ -1,16 +1,152 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Progress Bar</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+
+    .container {
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .progress-container {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    .progress-container::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: #ddd;
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+
+    .progress {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 4px;
+      background: #4caf50;
+      width: 0%;
+      transform: translateY(-50%);
+      z-index: 1;
+      transition: width 0.3s ease;
+    }
+
+    .circle {
+      width: 30px;
+      height: 30px;
+      background: #ddd;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      font-weight: bold;
+      color: #555;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .circle.active {
+      background: #4caf50;
+      color: white;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      background: #4caf50;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
+  <div class="container">
+    <div class="progress-container">
+      <div class="progress" id="progress"></div>
+      <div class="circle active" id="circle-1">1</div>
+      <div class="circle" id="circle-2">2</div>
+      <div class="circle" id="circle-3">3</div>
+      <div class="circle" id="circle-4">4</div>
+      <div class="circle" id="circle-5">5</div>
+    </div>
+    <div class="buttons">
+      <button id="prev" disabled>Previous</button>
+      <button id="next">Next</button>
+    </div>
+  </div>
 
+  <script>
+    const progress = document.getElementById('progress');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+    const circles = document.querySelectorAll('.circle');
+
+    let currentActive = 1;
+
+    function update() {
+      circles.forEach((circle, idx) => {
+        if(idx < currentActive) {
+          circle.classList.add('active');
+        } else {
+          circle.classList.remove('active');
+        }
+      });
+
+      const progressPercent = ((currentActive - 1) / (circles.length - 1)) * 100;
+      progress.style.width = progressPercent + '%';
+
+      prev.disabled = currentActive === 1;
+      next.disabled = currentActive === circles.length;
+    }
+
+    next.addEventListener('click', () => {
+      if(currentActive < circles.length) {
+        currentActive++;
+        update();
+      }
+    });
+
+    prev.addEventListener('click', () => {
+      if(currentActive > 1) {
+        currentActive--;
+        update();
+      }
+    });
+  </script>
 </body>
-
 </html>
